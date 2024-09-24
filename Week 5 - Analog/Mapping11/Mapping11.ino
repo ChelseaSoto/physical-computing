@@ -8,12 +8,25 @@ This is a Simon Says game. Neopixels light up to give a command and the player m
 
 void setup() {
   // put your setup code here, to run once:
-
+  Circuit.Playground.begin();
+  pinMode(CPLAY_SLIDESWITCHPIN, INPUT_PULLUP);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if(digitalRead(CPLAY_SLIDESWITCHPIN)){
+    //initialize our variables
+    int points = 0;
+    float xValue = CircuitPlayground.motionX();
+    float yValue = CircuitPlayground.motionY();
 
+    //while loop to keep the player going until they win five times in a row
+    while(points < 5){
+    //random number between 0-3
+
+    //switch statement  
+    }
+  }
 }
 
 
