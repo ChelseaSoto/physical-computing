@@ -6,83 +6,103 @@ This is a Simon Says game. Neopixels light up to give a command and the player m
 #include <Adafruit_CircuitPlayground.h>
 #include <Adafruit_Circuit_Playground.h>
 
-const int debounce = 25;
-const int threshold = 0;
+const int debounce = 700;
+const float threshold = 0;
+const int neo = 8;
+int points = 0;
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(9600);
   pinMode(neo, OUTPUT);
   CircuitPlayground.begin();
   pinMode(CPLAY_SLIDESWITCHPIN, INPUT_PULLUP);
+  CircuitPlayground.setBrightness(1);
+  CircuitPlayground.clearPixels();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   if (digitalRead(CPLAY_SLIDESWITCHPIN)) {
-    int points = 0;
+    //initialize x and y axis variables
+    float xValue = CircuitPlayground.motionX();
+    float yValue = CircuitPlayground.motionY();
+    //float initialLight = CircuitPlayground.lightSensor();
 
-    //while loop to keep the player going until they win five times in a row
-    while (points < 5) {
-      //initialize x and y axis variables
-      float xValue = CircuitPlayground.motionX();
-      float yValue = CircuitPlayground.motionY();
+    //random number between 0-3
+    int says = random(0, 4);
 
-      //random number between 0-3
-      int says = random(0, 4);
-      //switch statement
-      switch (says) {
-        case 0:  //left +y
-          //lights up the left half of the board
-          simonSays(0, 2);
-          simonSays(7, 9);
+    //switch statement
+    switch (says) {
+      case 0:  //left +y
+        //lights up the right half of the board
+        simonSays(2, 7);
+        delay(debounce);
+        CircuitPlayground.clearPixels();
 
-          delay(debounce);
-          CircuitPlayground.clearPixels();
+        //checks if the player rotated it in the correct direction
+        points = positiveCheck(yValue, points);
+        break;
 
-          //checks if the player rotated it in the correct direction
-          points = positiveCheck(yValue, points);
-          break;
-        case 1:  //right -y
-          //lights up the right half of the board
-          simonSays(2, 7);
-          delay(debounce);
-          CircuitPlayground.clearPixels();
+      case 1:  //right -y
+        //lights up the left half of the board
+        simonSays(0, 2);
+        simonSays(7, 9);
+        delay(debounce);
+        CircuitPlayground.clearPixels();
 
-          //checks if the player rotated it in the correct direction
-          points = negativeCheck(yValue, points);
-          break;
-        case 2:  //up +x
-          //lights up the upper half of the board
-          simonSays(5, 9);
-          delay(debounce);
-          CircuitPlayground.clearPixels();
+        //checks if the player rotated it in the correct direction
+        points = negativeCheck(yValue, points);
+        break;
 
-          //checks if the player rotated it in the correct direction
-          points = positiveCheck(yValue, points);
-          break;
-        case 3:  //down -x
-          //lights up the upper half of the board
-          simonSays(0, 4);
-          delay(debounce);
-          CircuitPlayground.clearPixels();
+      case 2:  //up +x
+        //lights up the lower half of the board
+        simonSays(5, 9);
+        delay(debounce);
+        CircuitPlayground.clearPixels();
 
-          //checks if the player rotated it in the correct direction
-          points = negativeCheck(xValue, points);
+        //checks if the player rotated it in the correct direction
+        points = positiveCheck(xValue, points);
+        break;
 
-          break;
-      }
+      case 3:  //down -x
+        //lights up the upper half of the board
+        simonSays(0, 4);
+        delay(debounce);
+        CircuitPlayground.clearPixels();
+
+        //checks if the player rotated it in the correct direction
+        points = negativeCheck(xValue, points);
+
+        break;
+
+      /*case 4:
+        simonSays(0, 9);
+        delay(1000);
+
+        float light = CircuitPlayground.lightSensor();
+
+        if (light < initialLight) {
+          green();
+        } else {
+          red();
+        }
+        break;*/
     }
 
 
     //if win condition is met
     if (points >= 5) {
       //flash green three times
-      for (int i; i <= 3; i++) {
+      for (int i = 0; i < 3; i++) {
         green();
       }
 
       //reset points to start the game again
       points = 0;
+    } else {
+      CircuitPlayground.clearPixels();
+      delay(threshold);
     }
   }
 }
@@ -102,7 +122,7 @@ int positiveCheck(float value, int points) {
     points++;
   } else {  //no
     //flash red twice
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 0; i < 2; i++) {
       red();
     }
     points = 0;
@@ -112,13 +132,13 @@ int positiveCheck(float value, int points) {
 
 //checks if in the negative of the axis past the threshold
 int negativeCheck(float value, int points) {
-  if (value < threshold) {  //yes
+  if (value < -threshold) {  //yes
     //flash green once
     green();
     points++;
   } else {  //no
     //flash red twice
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 0; i < 2; i++) {
       red();
     }
     points = 0;
