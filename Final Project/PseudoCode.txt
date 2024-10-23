@@ -1,67 +1,119 @@
-//set variables
-External Switch - Toggle
-Potentiometer - Movement
-External Thermal Sensor - Jump (Fireboy)
-Microphone - Jump (Watergirl)
+//<---------------| FIREBOY CONTROLLER |--------------->
 
-//Fireboy Controller
-Take the average thermal values
+/* NOTE: Take the average temperature value by . . .
+	. . . Adding a delay between readings
+	. . . Store the last 100 readings
+	. . . Add up all the values in the readings and divide by 100
+	. . . Return the average value.*/
 
-//Watergirl Controller
-Take the average sound level values
+	//Jump is determined on whether the temperature level taken is a significant amount higher than the average
 
-
-//external switch used to toggle between characters.
-If (external switch is on){
-	//then controller is set to Fireboy's controls
+void setup{
+	//set variables
+	External Switch - Toggle
+	Potentiometer - Movement
+	External Thermal Sensor - Jump (Fireboy)
 	
-	//moving
-	if (potentiometer reads less than 500){
-		then the key pressed down is left arrow key to move left
-	}else if (potentiometer reads greater than 523){
-		then the key pressed down is right arrow key to move right
-	}else{
-		no key input to stand still
-	}
-	
-	//jumping is microphone for the physical Watergirl Controller or thermal sensor for the physical Fireboy Controller
-	//ONLY ONE OF THE FOLLOWING IF-STATEMENTS FOR EACH CONTROLLER'S CODE:
-	
-	//Fireboy Controller with Fireboy Controls toggled
-	if (thermal sensor reads more than a certain value above the average thermal sensor values){
-		then the key pressed down is up arrow key to jump
-	}
+	Current reading
+	Number of readings
+	Reading Sum
+}
 
-	//Watergirl Controller with Fireboy Controls toggled
-	Take  the average input of sound levels in the room.
-	if (microphone reads more than a certain value above the average sound levels){
-		then the key pressed down is the up arrow key to jump
-	}
-
-}else{ //external switch is off
-	//then controller is set to Watergirl's controls
+void loop{
+	//external switch used to toggle between characters.
+	if (external switch is on){
+		//then controller is set to Fireboy's controls
 	
-	//moving
-	if (potentiometer reads less than 500){
-		then the key pressed down is the A key to move left
-	}else if (potentiometer reads greater than 523){
-		then the key pressed down is the D key to move right
-	}else{
-		no key input to stand still
-	}
+		//moving
+		if (potentiometer reads less than 500){
+			then the key pressed down is left arrow key to move left
+		}else if (potentiometer reads greater than 523){
+			then the key pressed down is right arrow key to move right
+		}else{
+			no key input to stand still
+		}
 	
-	//jumping is microphone for the physical Watergirl Controller or thermal sensor for the physical Fireboy Controller
-	//ONLY ONE OF THE FOLLOWING IF-STATEMENTS FOR EACH CONTROLLER'S CODE:
+		//Fireboy Controller with Fireboy Controls toggled
+		if (thermal sensor reads more than a certain value above the average thermal sensor values){
+			then the key pressed down is up arrow key to jump
+		}
 
-	//Watergirl Controller with Watergirl Controls toggled
-	if (microphone reads more than a certain value above the average sound levels){
-		then the key pressed down is the W key to jump
-	}
-
-	//Fireboy Controller with Watergirl Controls toggled
-	if (thermal sensor reads more than a certain value above the average thermal sensor values){
-		then the key pressed down is W key to jump
-	}
-
+	}else{ //external switch is off
+		//then controller is set to Watergirl's controls
 	
+		//moving
+		if (potentiometer reads less than 500){
+			then the key pressed down is the A key to move left
+		}else if (potentiometer reads greater than 523){
+			then the key pressed down is the D key to move right
+		}else{
+			no key input to stand still
+		}
+
+		//Fireboy Controller with Watergirl Controls toggled
+		if (thermal sensor reads more than a certain value above the average thermal sensor values){
+			then the key pressed down is W key to jump
+		}
+	}
+}
+
+
+
+//<---------------| WATERGIRL CONTROLLER |--------------->
+/* NOTE: Take the average sound level values by . . .
+	. . . Adding a delay between readings
+	. . . Store the last 100 readings
+	. . . Add up all the values in the readings and divide by 100
+	. . . Return the average value.*/
+	
+	//Jump is determined on whether the sound level taken is a significant amount higher than the average
+
+void setup{
+	//set variables
+	External Switch - Toggle
+	Potentiometer - Movement
+	Microphone - Jump (Watergirl)
+	
+	Current reading
+	Number of readings
+	Reading Sum
+}
+
+void loop{
+	//external switch used to toggle between characters.
+	if (external switch is on){
+		//then controller is set to Fireboy's controls
+	
+		//moving
+		if (potentiometer reads less than 500){
+			then the key pressed down is left arrow key to move left
+		}else if (potentiometer reads greater than 523){
+			then the key pressed down is right arrow key to move right
+		}else{
+			no key input to stand still
+		}
+
+		//Watergirl Controller with Fireboy Controls toggled
+		Take  the average input of sound levels in the room.
+		if (microphone reads more than a certain value above the average sound levels){
+			then the key pressed down is the up arrow key to jump
+		}
+
+	}else{ //external switch is off
+		//then controller is set to Watergirl's controls
+	
+		//moving
+		if (potentiometer reads less than 500){
+			then the key pressed down is the A key to move left
+		}else if (potentiometer reads greater than 523){
+			then the key pressed down is the D key to move right
+		}else{
+			no key input to stand still
+		}
+	
+		//Watergirl Controller with Watergirl Controls toggled
+		if (microphone reads more than a certain value above the average sound levels){
+			then the key pressed down is the W key to jump
+		}
+	}
 }
