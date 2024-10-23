@@ -1,13 +1,5 @@
 //<---------------| FIREBOY CONTROLLER |--------------->
 
-/* NOTE: Take the average temperature value by . . .
-	. . . Adding a delay between readings
-	. . . Store the last 100 readings
-	. . . Add up all the values in the readings and divide by 100
-	. . . Return the average value.*/
-
-	//Jump is determined on whether the temperature level taken is a significant amount higher than the average
-
 void setup{
 	//set variables
 	External Switch - Toggle
@@ -20,7 +12,7 @@ void setup{
    	sum of values
 		number of values taken
 	
-		//for loop to add the values together a number of times
+		//for-loop to add the values together a number of times
     for (int increment = 0; i < number of samples; increment++) {
         read current temperature from sensor
         add the current temperature to the sum
@@ -28,8 +20,6 @@ void setup{
     }
 	
 		average temperature = sum of values / number of values taken
-}
-
 }
 
 void loop{
@@ -74,13 +64,6 @@ void loop{
 
 
 //<---------------| WATERGIRL CONTROLLER |--------------->
-/* NOTE: Take the average sound level values by . . .
-	. . . Adding a delay between readings
-	. . . Store the last 100 readings
-	. . . Add up all the values in the readings and divide by 100
-	. . . Return the average value.*/
-	
-	//Jump is determined on whether the sound level taken is a significant amount higher than the average
 
 void setup{
 	//set variables
