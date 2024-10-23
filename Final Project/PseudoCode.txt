@@ -14,9 +14,22 @@ void setup{
 	Potentiometer - Movement
 	External Thermal Sensor - Jump (Fireboy)
 	
-	Current reading
-	Number of readings
-	Reading Sum
+	TemperatureThreshold
+
+	Find average temperature
+   	sum of values
+		number of values taken
+	
+		//for loop to add the values together a number of times
+    for (int increment = 0; i < number of samples; increment++) {
+        current temperature - read temperature from sensor
+        add the current temperature to the sum
+        delay between readings
+    }
+	
+		average temperature = sum of values / number of values taken
+}
+
 }
 
 void loop{
@@ -34,6 +47,10 @@ void loop{
 		}
 	
 		//Fireboy Controller with Fireboy Controls toggled
+		for(){
+		
+		}
+		
 		if (thermal sensor reads more than a certain value above the average thermal sensor values){
 			then the key pressed down is up arrow key to jump
 		}
@@ -73,10 +90,21 @@ void setup{
 	External Switch - Toggle
 	Potentiometer - Movement
 	Microphone - Jump (Watergirl)
+
+	SoundThreshold
 	
-	Current reading
-	Number of readings
-	Reading Sum
+	Find average sound levels
+   	sum of values
+		number of values taken
+	
+		//for loop to add the values together a number of times
+    for (int increment = 0; i < number of samples; increment++) {
+        current temperature - read sound levels from microphone
+        add the current sound levels to the sum
+        delay between readings
+    }
+	
+		average sound levels = sum of values / number of values taken
 }
 
 void loop{
