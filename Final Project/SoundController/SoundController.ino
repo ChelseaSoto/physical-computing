@@ -1,8 +1,5 @@
 /*
-Final Team 3
-Chelsea Soto and Molly Guinn
 
-This is 1 of 2 scripts for our final controller. This is specifically for our Fireboy Controller which reads temperature.
 */
 
 #include <Keyboard.h>
@@ -21,12 +18,22 @@ This is 1 of 2 scripts for our final controller. This is specifically for our Fi
 
 #include <math.h>
 
+
+//assign pins
+
+// potentiometer
+const int potent1 = A4;
+const int potent2 = A5;
+const int potent3 = A6;
+
+//external switch
+const int switch1 = A7;
+const int switch2 = A0;
+
+//constant variables
 const int debounce = 100;
 const int threshold = 10;
-
-float valueSum = 0.00;    //the overall sum
 const int valueNum = 10;  //number of values to take in
-
 
 void setup() {
   // put your setup code here, to run once:
@@ -39,24 +46,23 @@ void setup() {
   Serial.begin(9600);
 
   //initialize pins
-  pinMode(A1, INPUT);  // potentiometer
-  pinMode(A2, INPUT);  // external switch
-  pinMode(A3, INPUT);  // external thermal sensor
+  pinMode(potent, INPUT);  // potentiometer
+  pinMode(toggle, INPUT);  // external switch
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
   //initialize and call function to check the average
-  float average = checkAverage(valueSum, valueNum);
+  float average = checkAverage(valueNum);
 
   //checks which character is toggled
-  bool mode = analogRead(A2);
+  bool mode = analogRead(toggle);
 
-  if (mode = true) {  //FIREBOY CONTROLS
+  if (mode == true) {  //FIREBOY CONTROLS
 
     //checks potentiometer value
-    int potValue = analogRead(A1);
+    int potValue = analogRead(potent);
 
     //moving
     if (potValue < 500) {
@@ -67,8 +73,8 @@ void loop() {
       Serial.println("not moving");
     }
 
-    //checks current temperature
-    float currentValue = analogRead(A3);
+    //checks current sound level
+    float currentValue = CircuitPlayground.soundSensor();
 
     //checks the difference to compare the threshold to
     float difference = average - currentValue;
@@ -92,8 +98,8 @@ void loop() {
       Serial.println("not moving");
     }
 
-    //checks current temperature
-    int currentValue = analogRead(A3);
+    //checks current sound level
+    float currentValue = CircuitPlayground.soundSensor();
 
     //checks the difference to compare the threshold to
     float difference = average - currentValue;
@@ -107,14 +113,14 @@ void loop() {
 
 
 //function to check the average
-float checkAverage(float valueSum, int valueNum) {
+float checkAverage(int valueNum) {
 
   //initialize the current value
-  float currentValue = 0.00;
+  float valueSum = 0.00;
 
   for (int i = 0; i < valueNum; i++) {
-    currentValue = analogRead(A3);
-    valueSum = valueSum + currentValue;
+    float currentValue = CircuitPlayground.soundSensor();
+    valueSum += currentValue;
     Serial.print("current value: ");
     Serial.println(currentValue);
     Serial.print("total sum: ");
