@@ -1,7 +1,3 @@
-/*
-
-*/
-
 #include <Keyboard.h>
 #include <KeyboardLayout.h>
 #include <Keyboard_da_DK.h>
@@ -11,127 +7,124 @@
 #include <Keyboard_hu_HU.h>
 #include <Keyboard_it_IT.h>
 #include <Keyboard_pt_PT.h>
-#include <Keyboard_sv_SE.h>
 
 #include <Adafruit_CircuitPlayground.h>
 #include <Adafruit_Circuit_Playground.h>
 
 #include <math.h>
 
+// assign pins
+const int potent = A4; // potentiometer middle pin
+const int eSwitch = A7; // external switch middle pin
 
-//assign pins
-
-// potentiometer
-const int potent1 = A4;
-const int potent2 = A5;
-const int potent3 = A6;
-
-//external switch
-const int switch1 = A7;
-const int switch2 = A0;
-
-//constant variables
+// constant variables
 const int debounce = 100;
 const int threshold = 10;
-const int valueNum = 10;  //number of values to take in
+const int valueNum = 10; // number of values to take in
 
 void setup() {
-  // put your setup code here, to run once:
+    // initialize libraries
+    CircuitPlayground.begin();
+    Keyboard.begin();
 
-  //initialize libraries
-  CircuitPlayground.begin();
-  Keyboard.begin();
+    // serial initialization
+    Serial.begin(9600);
 
-  //serial initialization
-  Serial.begin(9600);
-
-  //initialize pins
-  pinMode(potent, INPUT);  // potentiometer
-  pinMode(toggle, INPUT);  // external switch
+    // initialize pins
+    pinMode(potent, INPUT);       // potentiometer
+    pinMode(eSwitch, INPUT_PULLUP);  // external switch
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+    // Check if the slide switch is on
+    if (digitalRead(CPLAY_SLIDESWITCHPIN)) {
+        
+        // Check sound level average every loop
+        float average = checkAverage(valueNum);
 
-  //initialize and call function to check the average
-  float average = checkAverage(valueNum);
+        // Check switch state for mode selection
+        bool mode = digitalRead(eSwitch) == LOW;
 
-  //checks which character is toggled
-  bool mode = analogRead(toggle);
+        if (mode) {  // FIREBOY CONTROLS
+            // Potentiometer value check
+            int potValue = analogRead(potent);
 
-  if (mode == true) {  //FIREBOY CONTROLS
+            // Moving left or right
+            if (potValue < 490) {
+                Keyboard.press(KEY_LEFT_ARROW);
+                Keyboard.release(KEY_RIGHT_ARROW);
+            } else if (potValue > 513) {
+                Keyboard.press(KEY_RIGHT_ARROW);
+                Keyboard.release(KEY_LEFT_ARROW);
+            } else {
+                Keyboard.releaseAll();  // No movement
+                Serial.println("not moving");
+            }
 
-    //checks potentiometer value
-    int potValue = analogRead(potent);
+            // Check current sound level
+            float currentValue = CircuitPlayground.soundSensor();
 
-    //moving
-    if (potValue < 500) {
-      Keyboard.write(KEY_LEFT_ARROW);
-    } else if (potValue > 523) {
-      Keyboard.write(KEY_RIGHT_ARROW);
-    } else {
-      Serial.println("not moving");
+            // Calculate difference to compare with threshold
+            float difference = average - currentValue;
+
+            // Jumping
+            if (difference >= threshold) {
+                Keyboard.press(KEY_UP_ARROW);
+            } else {
+                Keyboard.release(KEY_UP_ARROW);
+            }
+
+        } else {  // WATERGIRL CONTROLS
+            // Potentiometer value check
+            int potValue = analogRead(potent);
+
+            // Moving left or right
+            if (potValue < 490) {
+                Keyboard.press('A');
+                Keyboard.release('D');
+            } else if (potValue > 513) {
+                Keyboard.press('D');
+                Keyboard.release('A');
+            } else {
+                Keyboard.releaseAll();  // No movement
+                Serial.println("not moving");
+            }
+
+            // Check current sound level
+            float currentValue = CircuitPlayground.soundSensor();
+
+            // Calculate difference to compare with threshold
+            float difference = average - currentValue;
+
+            // Jumping
+            if (difference >= threshold) {
+                Keyboard.press('W');
+            } else {
+                Keyboard.release('W');
+            }
+        }
+
+        // Small delay to avoid switch debounce issues
+        delay(50);
     }
-
-    //checks current sound level
-    float currentValue = CircuitPlayground.soundSensor();
-
-    //checks the difference to compare the threshold to
-    float difference = average - currentValue;
-
-    //jumping
-    if (difference >= threshold) {
-      Keyboard.write(KEY_UP_ARROW);
-    }
-
-  } else {  //WATERGIRL CONTROLS
-
-    //checks potentiometer value
-    int potValue = analogRead(A1);
-
-    //moving
-    if (potValue < 500) {
-      Keyboard.write('A');
-    } else if (potValue > 523) {
-      Keyboard.write('D');
-    } else {
-      Serial.println("not moving");
-    }
-
-    //checks current sound level
-    float currentValue = CircuitPlayground.soundSensor();
-
-    //checks the difference to compare the threshold to
-    float difference = average - currentValue;
-
-    //jumping
-    if (difference >= threshold) {
-      Keyboard.write('W');
-    }
-  }
 }
 
-
-//function to check the average
+// Function to check the average sound level
 float checkAverage(int valueNum) {
+    float valueSum = 0.0;
 
-  //initialize the current value
-  float valueSum = 0.00;
+    for (int i = 0; i < valueNum; i++) {
+        float currentValue = CircuitPlayground.soundSensor();
+        valueSum += currentValue;
+        Serial.print("Current sound level: ");
+        Serial.println(currentValue);
+        delay(debounce);
+    }
 
-  for (int i = 0; i < valueNum; i++) {
-    float currentValue = CircuitPlayground.soundSensor();
-    valueSum += currentValue;
-    Serial.print("current value: ");
-    Serial.println(currentValue);
-    Serial.print("total sum: ");
-    Serial.println(valueSum);
-    delay(debounce);
-  }
+    float average = valueSum / valueNum;
 
-  float average = valueSum / valueNum;
+    Serial.print("AVERAGE SOUND LEVEL: ");
+    Serial.println(average);
 
-  Serial.print("AVERAGE: ");
-  Serial.println(average);
-
-  return average;
+    return average;
 }
