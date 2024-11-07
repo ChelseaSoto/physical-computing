@@ -103,14 +103,14 @@ void loop() {
 
       // Movement
       if (potValue < 462) { // Move right
-        Keyboard.press('D');
-        Keyboard.release('A');
+        Keyboard.press('d');
+        Keyboard.release('a');
       } else if (potValue > 562) { // Move left
-        Keyboard.press('A');
-        Keyboard.release('D');
+        Keyboard.press('a');
+        Keyboard.release('d');
       } else { // No movement
-        Keyboard.release('A');
-        Keyboard.release('D');
+        Keyboard.release('a');
+        Keyboard.release('d');
         Serial.println("not moving");
       }
 
@@ -118,9 +118,9 @@ void loop() {
       float currentValue = CircuitPlayground.soundSensor();
       float difference = baselineAverage - currentValue;
       if (difference >= threshold) {
-        Keyboard.press('W'); // Jump
+        Keyboard.press('w'); // Jump
       } else {
-        Keyboard.release('W'); // Stop jump
+        Keyboard.release('w'); // Stop jump
       }
     }
 
